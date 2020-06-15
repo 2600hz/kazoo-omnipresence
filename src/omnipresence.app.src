@@ -2,7 +2,7 @@
              [{applications,[kazoo,kazoo_amqp,kazoo_apps,kazoo_config,
                              kazoo_data,kazoo_documents,kazoo_sip,
                              kazoo_stdlib,kernel,lager,stdlib]},
-              {description,"Omnipresence - Who's doing what when"},
+              {description,"Omnipresence: Who's doing what when"},
               {env,[{is_kazoo_app,true}]},
               {mod,{omnipresence_app,[]}},
               {modules,[]},
