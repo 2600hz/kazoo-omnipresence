@@ -54,14 +54,6 @@
 -define(NOTIFY_TYPES, []).
 
 
-%% Reset presence dialog cache entry
--define(RESET_HEADERS, [<<"Realm">>, <<"Username">>]).
--define(OPTIONAL_RESET_HEADERS, [<<"Event-Package">>]).
--define(RESET_VALUES, [{<<"Event-Category">>, <<"presence">>}
-                      ,{<<"Event-Name">>, <<"reset">>}
-                      ]).
--define(RESET_TYPES, []).
-
 %%------------------------------------------------------------------------------
 %% @doc Subscribing for updates
 %% Takes proplist, creates JSON string or error

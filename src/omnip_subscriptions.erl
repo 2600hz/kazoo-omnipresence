@@ -42,7 +42,6 @@
 -define(EXPIRES_FUDGE, kapps_config:get_integer(?CONFIG_CAT, <<"expires_fudge_s">>, 20)).
 -define(EXPIRE_MESSAGE, 'clear_expired').
 -define(DEFAULT_EVENT, ?BLF_EVENT).
--define(DEFAULT_SEND_EVENT_LIST, [?BLF_EVENT, ?PRESENCE_EVENT]).
 
 -define(DEFAULT_VM_NUMBER, <<"*98">>).
 -define(VM_NUMBER_KEY, <<"dialog_subscribed_mwi_prefix">>).
@@ -50,7 +49,6 @@
 
 -record(state, {expire_ref :: reference()
                ,ready = 'false' :: boolean()
-               ,sync = 'false'  :: boolean()
                ,sync_nodes = [] :: list()
                ,other_nodes_count = 0 :: integer()
                }).
@@ -440,33 +438,33 @@ notify(JObj) ->
     end.
 
 -type msg() :: {kz_term:ne_binary(), kz_term:ne_binary(), kz_term:ne_binary(), kz_term:ne_binary()}.
--type exec_fun() :: fun((atom(), msg()) -> 'ok').
+-type exec_fun() :: fun((msg()) -> 'ok').
 
 -spec on_subscribe(msg()) -> 'ok'.
 on_subscribe(Msg) ->
-    Routines = [fun maybe_probe/2],
-    exec(Routines, 'subscribe', Msg).
+    Routines = [fun maybe_probe/1],
+    exec(Routines, Msg).
 
 -spec on_resubscribe(msg()) -> 'ok'.
 on_resubscribe(Msg) ->
-    Routines = [fun maybe_probe/2],
-    exec(Routines, 'resubscribe', Msg).
+    Routines = [fun maybe_probe/1],
+    exec(Routines, Msg).
 
 -spec on_notify(msg()) -> 'ok'.
 on_notify(Msg) ->
     Routines = [],
-    exec(Routines, 'notify', Msg).
+    exec(Routines, Msg).
 
--spec exec([exec_fun()], atom(), msg()) -> 'ok'.
-exec([], _Reason, _Msg) -> 'ok';
-exec([Fun|Funs], Reason, Msg) ->
-    Fun(Reason, Msg),
-    exec(Funs, Reason, Msg).
+-spec exec([exec_fun()], msg()) -> 'ok'.
+exec([], _Msg) -> 'ok';
+exec([Fun|Funs], Msg) ->
+    Fun(Msg),
+    exec(Funs, Msg).
 
--spec maybe_probe(atom(), msg()) -> 'ok'.
-maybe_probe(_, {<<"message-summary">> = Package, Username, Realm, _}) ->
+-spec maybe_probe(msg()) -> 'ok'.
+maybe_probe({<<"message-summary">> = Package, Username, Realm, _}) ->
     omnip_util:request_probe(Package, Username, Realm);
-maybe_probe(_, {<<"dialog">>, <<"*", _/binary>> = Username, Realm, _}) ->
+maybe_probe({<<"dialog">>, <<"*", _/binary>> = Username, Realm, _}) ->
     case kapps_util:get_account_by_realm(Realm) of
         {'ok', Account} ->
             VM = ?VM_NUMBER(kzs_util:format_account_id(Account)),
@@ -477,4 +475,4 @@ maybe_probe(_, {<<"dialog">>, <<"*", _/binary>> = Username, Realm, _}) ->
             end;
         _ -> 'ok'
     end;
-maybe_probe(_, _) -> 'ok'.
+maybe_probe(_) -> 'ok'.
