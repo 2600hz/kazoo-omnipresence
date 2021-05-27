@@ -1,5 +1,5 @@
 %%%-----------------------------------------------------------------------------
-%%% @copyright (C) 2013-2020, 2600Hz
+%%% @copyright (C) 2013-2021, 2600Hz
 %%% @doc Intra-whapp comm
 %%% @author James Aimonetti
 %%%
@@ -53,14 +53,6 @@
                        ]).
 -define(NOTIFY_TYPES, []).
 
-
-%% Reset presence dialog cache entry
--define(RESET_HEADERS, [<<"Realm">>, <<"Username">>]).
--define(OPTIONAL_RESET_HEADERS, [<<"Event-Package">>]).
--define(RESET_VALUES, [{<<"Event-Category">>, <<"presence">>}
-                      ,{<<"Event-Name">>, <<"reset">>}
-                      ]).
--define(RESET_TYPES, []).
 
 %%------------------------------------------------------------------------------
 %% @doc Subscribing for updates
